@@ -5,8 +5,8 @@ import { createServer as createViteServer } from 'vite';
 import https from 'https';
 import multer from 'multer';
 import { createRequire } from 'module';
-const require = createRequire(import.meta.url);
-const pdfParse = require('pdf-parse');
+const myRequire = typeof require !== 'undefined' ? require : createRequire((typeof import.meta !== 'undefined' && import.meta.url) ? import.meta.url : `file://${process.cwd()}/server.cjs`);
+const pdfParse = myRequire('pdf-parse');
 import mammoth from 'mammoth';
 
 const CFG = {
