@@ -1,0 +1,6 @@
+{
+  "name": "Veltrxy Ai",
+  "description": "A chat interface for the Veltrxy Ai API.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
