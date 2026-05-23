@@ -4,6 +4,7 @@ import path from 'path';
 import { createServer as createViteServer } from 'vite';
 import https from 'https';
 import multer from 'multer';
+import fs from 'fs';
 import { createRequire } from 'module';
 const myRequire = typeof require !== 'undefined' ? require : createRequire((typeof import.meta !== 'undefined' && import.meta.url) ? import.meta.url : `file://${process.cwd()}/server.cjs`);
 const pdfParse = myRequire('pdf-parse');
@@ -116,7 +117,9 @@ async function startServer() {
   });
 
   // Vite middleware for development
-  if (process.env.NODE_ENV !== 'production') {
+  const isProd = process.env.NODE_ENV === 'production' || !fs.existsSync(path.join(process.cwd(), 'vite.config.ts'));
+  
+  if (!isProd) {
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: 'spa',
@@ -124,10 +127,23 @@ async function startServer() {
     app.use(vite.middlewares);
   } else {
     // Serve static files in production
-    const distPath = path.join(process.cwd(), 'dist');
+    let distPath = path.join(process.cwd(), 'dist');
+    
+    // If the server is started from within the dist directory itself
+    if (!fs.existsSync(path.join(distPath, 'index.html'))) {
+      if (fs.existsSync(path.join(process.cwd(), 'index.html'))) {
+        distPath = process.cwd();
+      }
+    }
+    
     app.use(express.static(distPath));
     app.get('*', (req, res) => {
-      res.sendFile(path.join(distPath, 'index.html'));
+      const indexPath = path.join(distPath, 'index.html');
+      if (fs.existsSync(indexPath)) {
+        res.sendFile(indexPath);
+      } else {
+        res.status(404).send(`Not Found: index.html is missing in ${distPath}. Please ensure you have run the build script.`);
+      }
     });
   }
 
