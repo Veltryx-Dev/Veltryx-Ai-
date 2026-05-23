@@ -4,6 +4,13 @@ export interface Message {
   content: string | any[];
 }
 
+export interface ChatSession {
+  id: string;
+  title: string;
+  messages: Message[];
+  updatedAt: number;
+}
+
 export interface Attachment {
   id: string;
   file: File;
