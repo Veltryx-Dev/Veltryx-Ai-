@@ -27,33 +27,33 @@ async function startServer() {
   // API route to proxy the chat completion
   app.post('/api/chat', async (req, res) => {
     try {
-      const { messages, stream = true } = req.body;
+      const { messages, stream = true, model = 'cyto-2.4' } = req.body;
 
-      const payload = {
-        model: CFG.model,
+      let apiUrl = `${CFG.base_url}/v1/chat/completions`;
+      let apiKey = CFG.api_key;
+      let targetModel = model;
+
+      const payload: any = {
+        model: targetModel,
         messages,
         stream,
       };
 
-      const options = {
+      const fetchRes = await fetch(apiUrl, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${CFG.api_key}`,
+          'Authorization': `Bearer ${apiKey}`,
           'Content-Type': 'application/json',
-        },
-      };
-
-      const fetchRes = await fetch(`${CFG.base_url}/v1/chat/completions`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${CFG.api_key}`,
-          'Content-Type': 'application/json',
+          'HTTP-Referer': 'https://veltrxy.app',
+          'X-OpenRouter-Title': 'Veltrxy',
         },
         body: JSON.stringify(payload),
       });
 
       if (!fetchRes.ok) {
-        throw new Error(`API error: ${fetchRes.statusText}`);
+        const errText = await fetchRes.text();
+        console.error('API Error Response:', errText);
+        throw new Error(`API error: ${fetchRes.status} ${fetchRes.statusText} - ${errText}`);
       }
 
       if (stream) {
@@ -80,9 +80,9 @@ async function startServer() {
         const data = await fetchRes.json();
         res.json(data);
       }
-    } catch (error) {
-      console.error('Chat API Error:', error);
-      res.status(500).json({ error: 'Failed to process chat request.' });
+    } catch (error: any) {
+      console.error('Chat API Error:', error.message);
+      res.status(500).json({ error: error.message });
     }
   });
 
