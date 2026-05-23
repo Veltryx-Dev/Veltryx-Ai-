@@ -27,6 +27,7 @@
     "react-dom": "^19.0.1",
     "react-markdown": "^10.1.0",
     "tailwind-merge": "^3.6.0",
+    "tailwindcss-animate": "^1.0.7",
     "vite": "^6.2.3"
   },
   "devDependencies": {

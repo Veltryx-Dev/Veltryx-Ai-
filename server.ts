@@ -17,7 +17,7 @@ const CFG = {
 
 async function startServer() {
   const app = express();
-  const PORT = process.env.PORT || 3000;
+  const PORT = process.env.PORT ? parseInt(process.env.PORT) : 3000;
   const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 50 * 1024 * 1024 } });
 
   // Increase payload limit for large base64 images
