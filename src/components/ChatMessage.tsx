@@ -39,8 +39,8 @@ export function ChatMessage({ message }: ChatMessageProps) {
         className={clsx(
           'relative px-6 py-4 text-[15px] max-w-[85%] sm:max-w-[75%] rounded-[2rem] shadow-sm overflow-hidden flex flex-col gap-3 transition-all duration-300',
           isUser
-            ? 'bg-zinc-900 dark:bg-zinc-100 text-zinc-50 dark:text-zinc-900 rounded-br-md shadow-zinc-900/10 dark:shadow-zinc-100/10'
-            : 'bg-white dark:bg-zinc-800 text-zinc-800 dark:text-zinc-50 rounded-bl-md border border-zinc-100 dark:border-zinc-700 shadow-xl shadow-zinc-200/20 dark:shadow-none'
+            ? 'bg-zinc-900 dark:bg-white text-zinc-50 dark:text-zinc-900 rounded-br-md shadow-zinc-900/10 dark:shadow-white/10'
+            : 'bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md text-zinc-800 dark:text-zinc-100 rounded-bl-md border border-white/60 dark:border-white/10 shadow-xl shadow-zinc-200/20 dark:shadow-black/20'
         )}
       >
         {images.length > 0 && (

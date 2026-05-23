@@ -1,5 +1,5 @@
 import React from 'react';
-import { Plus, MessageSquare, Trash2, Calendar, Menu } from 'lucide-react';
+import { Plus, MessageSquare, Trash2, Settings, X } from 'lucide-react';
 import { ChatSession } from '../types';
 import clsx from 'clsx';
 
@@ -35,26 +35,48 @@ export function Sidebar({
       {/* Sidebar Container */}
       <div 
         className={clsx(
-          "fixed lg:static inset-y-0 left-0 z-30 w-72 bg-zinc-50 dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-800 flex flex-col transition-transform duration-300 ease-in-out",
-          isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+          "fixed lg:static inset-y-0 left-0 z-30 bg-white/40 dark:bg-[#020617]/40 backdrop-blur-3xl border-r border-white/20 dark:border-white/5 flex flex-col transition-all duration-300 ease-in-out shrink-0 overflow-hidden",
+          isOpen ? "translate-x-0 w-72 opacity-100" : "-translate-x-full w-72 lg:w-0 lg:border-r-0 lg:-translate-x-10 lg:opacity-0"
         )}
       >
-        <div className="p-4 border-b border-zinc-200 dark:border-zinc-800">
+        <div className="px-4 sm:px-5 pt-5 pb-2">
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => {
+                onNewSession();
+                if (window.innerWidth < 1024) onToggle();
+              }}
+              className="flex-1 flex items-center justify-between px-4 py-3 bg-white/60 dark:bg-zinc-900/40 text-zinc-900 dark:text-zinc-100 font-semibold rounded-[1rem] hover:bg-white dark:hover:bg-zinc-800/60 border border-white/60 dark:border-white/10 transition-all duration-300 shadow-sm hover:shadow-md group"
+            >
+              <span className="flex items-center gap-2">
+                <Plus size={18} className="group-hover:rotate-90 transition-transform duration-300" />
+                New Chat
+              </span>
+            </button>
+            <button
+              onClick={onToggle}
+              className="p-3 text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-100 bg-white/60 dark:bg-zinc-900/40 hover:bg-white dark:hover:bg-zinc-800/60 border border-white/60 dark:border-white/10 rounded-[1rem] transition-all duration-300 shadow-sm flex-shrink-0"
+              title="Close Sidebar"
+            >
+              <X size={18} />
+            </button>
+          </div>
+        </div>
+
+        <div className="px-3 pb-3 pt-2">
           <button
-            onClick={() => {
-              onNewSession();
-              if (window.innerWidth < 1024) onToggle();
-            }}
-            className="w-full flex items-center justify-between px-4 py-3 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-50 font-semibold rounded-2xl hover:bg-zinc-100 dark:hover:bg-zinc-700 border border-zinc-200 dark:border-zinc-700 transition-colors shadow-sm"
+            className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-zinc-600 dark:text-zinc-300 hover:bg-white/50 dark:hover:bg-white/5 hover:text-zinc-900 dark:hover:text-zinc-100 rounded-xl transition-colors"
           >
-            <span className="flex items-center gap-2">
-              <Plus size={18} />
-              New Chat
-            </span>
+            <Settings size={18} className="opacity-70" />
+            Settings
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-3 space-y-1">
+        <div className="px-5 pb-2 pt-2">
+          <span className="text-[10px] font-bold tracking-widest text-zinc-400 dark:text-zinc-500 uppercase">History</span>
+        </div>
+
+        <div className="flex-1 overflow-y-auto px-3 pb-4 space-y-1">
           {sessions.length === 0 ? (
             <div className="text-center text-zinc-500 py-8 px-4 text-sm font-medium">
               No previous conversations
@@ -64,10 +86,10 @@ export function Sidebar({
               <div
                 key={session.id}
                 className={clsx(
-                  "group relative w-full flex items-center gap-3 px-3 py-3 rounded-2xl cursor-pointer transition-all duration-200",
+                  "group relative w-full flex items-center gap-3 px-3 py-3 rounded-2xl cursor-pointer transition-all duration-300",
                   session.id === currentSessionId
-                    ? "bg-zinc-200 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-50"
-                    : "text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800/50 hover:text-zinc-900 dark:hover:text-zinc-200"
+                    ? "bg-white/80 dark:bg-white/10 text-zinc-900 dark:text-white shadow-sm border border-white/60 dark:border-white/5"
+                    : "text-zinc-600 dark:text-zinc-400 hover:bg-white/50 dark:hover:bg-white/5 hover:text-zinc-900 dark:hover:text-zinc-200 border border-transparent"
                 )}
                 onClick={() => {
                   onSelectSession(session.id);
@@ -80,12 +102,12 @@ export function Sidebar({
                     {session.title || 'New Conversation'}
                   </p>
                   <p className={clsx("text-[10px] font-medium truncate mt-0.5", session.id === currentSessionId ? "text-zinc-600 dark:text-zinc-400" : "text-zinc-500")}>
-                    {new Date(session.updatedAt).toLocaleDateString(undefined, { 
+                    {session.updatedAt ? new Date(session.updatedAt).toLocaleDateString(undefined, { 
                       month: 'short', 
                       day: 'numeric',
                       hour: 'numeric',
                       minute: '2-digit'
-                    })}
+                    }) : 'Recent'}
                   </p>
                 </div>
                 <button

@@ -16,8 +16,8 @@ export function CodeBlock({ language, value }: CodeBlockProps) {
   };
 
   return (
-    <div className="relative rounded-xl overflow-hidden bg-zinc-900 border border-zinc-800 my-4 shadow-md group dark:bg-[#1e1e1e] dark:border-zinc-700">
-      <div className="flex items-center justify-between px-4 py-2 bg-zinc-800/80 border-b border-zinc-700/80 dark:bg-[#252526] dark:border-zinc-700">
+    <div className="relative rounded-xl overflow-hidden bg-zinc-900 border border-zinc-800 my-4 shadow-md group dark:bg-[#09090b] dark:border-zinc-800">
+      <div className="flex items-center justify-between px-4 py-2 bg-zinc-800/80 border-b border-zinc-700/80 dark:bg-[#0f172a] dark:border-zinc-800">
         <span className="text-xs font-mono text-zinc-400 capitalize">{language || 'text'}</span>
         <button
           onClick={handleCopy}
