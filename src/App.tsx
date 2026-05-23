@@ -49,6 +49,11 @@ export default function App() {
     sessions.length > 0 ? sessions[0].id : null
   );
 
+  const currentSessionIdRef = useRef<string | null>(currentSessionId);
+  useEffect(() => {
+    currentSessionIdRef.current = currentSessionId;
+  }, [currentSessionId]);
+
   const [isSidebarOpen, setIsSidebarOpen] = useState(() => typeof window !== 'undefined' && window.innerWidth >= 1024);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -190,13 +195,17 @@ export default function App() {
   };
 
   const updateSessionMessages = (updater: (prevMessages: Message[]) => Message[], titleHint?: string) => {
+    let targetId = currentSessionIdRef.current;
+    
     setSessions(prev => {
       let isNew = false;
-      let targetId = currentSessionId;
       
       if (!targetId || !prev.find(s => s.id === targetId)) {
         targetId = Date.now().toString();
         isNew = true;
+        // Schedule setting the current ID soon as we exit this setter
+        setTimeout(() => setCurrentSessionId(targetId), 0);
+        currentSessionIdRef.current = targetId;
       }
 
       const existingSessions = isNew 
@@ -215,13 +224,6 @@ export default function App() {
         return s;
       });
     });
-
-    if (!currentSessionId || !sessions.find(s => s.id === currentSessionId)) {
-      setSessions(prev => {
-        if (prev.length > 0) setCurrentSessionId(prev[0].id);
-        return prev;
-      });
-    }
   };
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
